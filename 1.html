@@ -74,13 +74,13 @@
         players[i] = {
           posX: randomX,
           posY: randomY,
-          width: 50,
-          height: 35,
+          width: 40,
+          height: 30,
           right: 0,
           bottom: 0,
           stegX: 0.5,
           stegY: 0.5,
-          accelaration: 1,
+          accelaration: 2,
           direction: "west",
           hit: false,
         };
@@ -134,7 +134,7 @@
       }
       function bytBild(obj, bild1, bild2) {
         skepp[obj].src = `img/skepp${obj}_${bild1}.gif`;
-        inputs[0].value = `img/skepp${obj}_${bild1}.gif`;
+        //inputs[0].value = `img/skepp${obj}_${bild1}.gif`;
       }
       function kollaVar(obj) {
         if (krock) {
@@ -335,6 +335,7 @@
   <body>
     <!--div id="skepp1">skepp 1</div>
     <div id="skepp2">skepp 2</div-->
+    <!--input type="text" />
     <input type="text" />
     <input type="text" />
     <input type="text" />
@@ -342,8 +343,7 @@
     <input type="text" />
     <input type="text" />
     <input type="text" />
-    <input type="text" />
-    <br />
+    <br /-->
     Player 1 Styr med awsd skjut med space<br />
     Player 2 Styr med 4856 skjut med 0<br />
   </body>
