@@ -238,11 +238,18 @@
 
         if (players[0].hit) {
           oSkott[1].active = false;
-          bytBild(0, "wreck0", "explosion");
+          bytBild(0, "explosion", "explosion");
+          setTimeout(() => {
+              location.reload()
+            }, 1000)
+
         }
         if (players[1].hit) {
           oSkott[0].active = false;
-          bytBild(1, "wreck1", "explosion");
+          bytBild(1, "explosion", "explosion");
+          setTimeout(() => {
+              location.reload()
+            }, 1000)
         }
       }
       // Ger objekten position utifrån värdena från händeserna
