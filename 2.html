@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #skepp, #u-bat {
+            position: absolute;
+            top: 50px;
+        }
+    </style>
+    <script type="module">
+        // Input objekt för att kontrollera värden
+        let inputs = document.querySelectorAll("input");
+        // Hämtar elementen och skapar style-objekt
+        const skepp = document.getElementById("skepp").style;
+        const uBat = document.getElementById("u-bat").style;
+        // Skapar ett objekt i JS för skeppet
+        const oSkepp = {
+            posX: 0,
+            posY: 800,
+            width: 0,
+            height: 0,
+            speedX: 5,
+            speedY: 10,
+            accelarationY: 1.05,
+            accelarationX: 5,
+        };
+        // Ger objekten position utifrån värdena från händeserna
+        const motor1 = setInterval(()=>{
+            // posX ökar för varje anrop med hastighetsvärdet
+
+            
+
+            //oSkepp.accelarationY = oSkepp.speedY - oSkepp.accelarationY 
+            oSkepp.posY -= oSkepp.speedY;
+            oSkepp.speedY /= oSkepp.accelarationY;
+            if (oSkepp.speedY < 1) {
+                oSkepp.accelarationY = -1.05
+                oSkepp.speedY = 10;
+            }
+            else  {
+                oSkepp.accelarationY = 1.05
+                oSkepp.speedY = -10;
+            }
+            
+            
+            
+
+            // style-objektet får ny possition
+           skepp.top = oSkepp.posY + "px";
+            
+
+            // Kontrollvärden
+            inputs[0].value = oSkepp.accelarationY;
+
+            
+        }, 20)
+
+    </script>
+</head>
+<body>
+    <div id="skepp">skepp</div>
+    <div id="u-bat">uBat</div>
+    <input type="text">
+    <input type="text">
+    <input type="text">
+    <input type="text">
+    <input type="text">
+    <input type="text">
+    <input type="text">
+    <input type="text">
+</body>
+</html>
