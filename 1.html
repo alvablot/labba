@@ -45,12 +45,13 @@
         padding-bottom: 2rem;
       }
       .input-right {
-          text-align: right;
-          width:7.2rem;
-        }
+        text-align: right;
+        width: 7.2rem;
+      }
       .input-three {
-          text-align: right;
-          width:4.7rem;}
+        text-align: right;
+        width: 4.7rem;
+      }
       #info {
         font-family: "Press Start 2P", sans-serif;
         font-size: 1rem;
@@ -97,14 +98,12 @@
         inputs[i].setAttribute("type", "text");
         document.body.append(inputs[i]);
       }
-      inputs[0].classList.add("input-right")
-      inputs[2].classList.add("input-right")
-      inputs[4].classList.add("input-three")
+      inputs[0].classList.add("input-right");
+      inputs[2].classList.add("input-right");
+      inputs[4].classList.add("input-three");
       inputs[0].value = "P1 SCORE:";
       inputs[2].value = "P2 SCORE:";
       inputs[4].value = "ROUND:";
-
-   
 
       const info = document.createElement("div");
       info.setAttribute("id", "info");
@@ -393,8 +392,8 @@
             oSkott[i].posY += oSkott[i].speedY;
           } else {
             // Ursprungvärden, precis i mitten av skeppet
-            oSkott[i].posX = players[i].posX + 10;
-            oSkott[i].posY = players[i].posY + 10;
+            oSkott[i].posX = players[i].posX + players[i].width / 2;
+            oSkott[i].posY = players[i].posY + players[i].height / 2;
             oSkott[i].speedY = players[i].stegY;
             oSkott[i].speedX = players[i].stegX;
           }
@@ -511,7 +510,7 @@
             oSkott[b].posX > players[a].posX &&
             oSkott[b].posX < players[a].right &&
             oSkott[b].posY < players[a].bottom &&
-            oSkott[b].posY > (players[a].posY-5);
+            oSkott[b].posY > players[a].posY - 5;
           if (players[a].hit) {
             skott[a].style.display = "none";
             skott[b].style.display = "none";
