@@ -1,7 +1,8 @@
 input {
   border: 0px;
-  padding: 0.5rem;
-  width: 0.8rem;
+  padding-top: 0.4rem;
+  padding-left: 0rem;
+  width: 1rem;
 }
 img,
 div,
@@ -17,27 +18,12 @@ span {
   position: relative;
 }
 body {
-  overflow-y: hidden;
+  overflow-y: hidden;.top
   overflow-x: hidden;
 }
 h1 {
   padding-top: 2rem;
   padding-bottom: 2rem;
-}
-.input-right {
-  text-align: right;
-  width: 7.2rem;
-}
-.input-three {
-  text-align: right;
-  width: 4.7rem;
-}
-#info {
-  top: -3rem;
-  position: relative;
-  display: block;
-  z-index: 5;
-  visibility: hidden;
 }
 main {
   position: absolute;
@@ -47,3 +33,21 @@ main {
   align-items: center;
   justify-content: center;
 }
+.input-right {
+  text-align: right;
+  width: 7.9rem;
+  padding-right: 0px;
+  margin-right: 0px;
+}
+.input-three {
+  text-align: right;
+  width: 5.4rem;
+}
+#info {
+  top: -3rem;
+  position: relative;
+  display: block;
+  z-index: 5;
+  visibility: hidden;
+}
+

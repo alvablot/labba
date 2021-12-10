@@ -1,6 +1,14 @@
-body,
-input {
+body {
   background-color: black;
   color: white;
+  border: 0px solid white;
   background-image: url("../img/background.gif");
+}
+input {
+  color: red;
+  background-color: black;
+}
+.input-right,
+.input-three {
+  color: white;
 }
