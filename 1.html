@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Press Start 2P"
+      rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press Start 2P"
     />
     <style>
       input {
@@ -55,6 +54,33 @@
       }
     </style>
     <script type="module">
+      const startHastighet = 0.55;
+      const skepp = [];
+      const oSkott = [];
+      const skott = [];
+      const keyNames = [];
+      const numberOfPlayers = 2;
+      const numberOfAmmo = 2;
+      const players = [];
+      const direction = ["east", "west"];
+      keyNames[1] = ["d", "a", "w", "s"]; // Styrning player 1
+      keyNames[0] = ["6", "4", "8", "5"]; // Styrning player 2
+      keyNames[2] = " "; // Skjut player 1
+      keyNames[3] = "0"; // Skjut player 2
+      let bothComingFromRight = false;
+      let bothComingFromLeft = false;
+      let bothComingFromTop = false;
+      let bothComingFromBottom = false;
+      let zeroLeftOneRight = false;
+      let oneLeftZeroRight = false;
+      let zeroTopOneBottom = false;
+      let oneTopZeroBottom = false;
+      let krock = false;
+      let onHold = true;
+      let round = 1;
+      let endRound = 3;
+      let winner = 0;
+      const ajust = 10;
       // Input objekt för att kontrollera värden
       let inputs = document.querySelectorAll("input");
       //const info = document.createElement("div");
@@ -109,14 +135,54 @@
       });
       function startGame() {
         for (let i = 0; i < numberOfPlayers; i++) {
-            skepp[i].style.display = "block";
-            skott[i].style.display = "block";
-            if (players[i].stegX > 0) players[i].direction = "east";
-              bytBild(i, players[i].direction);
-            if (players[i].stegX < 0) players[i].direction = "west";
-              bytBild(i, players[i].direction);
+          skepp[i].style.display = "block";
+          skott[i].style.display = "block";
+          onHold = false;
+          if (players[i].stegX > 0) players[i].direction = "east";
+          bytBild(i, players[i].direction);
+          if (players[i].stegX < 0) players[i].direction = "west";
+          bytBild(i, players[i].direction);
         }
         info.style.visibility = "hidden";
+      }
+      /// Resettar skeppens positioner och gömmer när inforutan visas
+      function continueGame(a, b) {
+        skepp[a].style.display = "none";
+        skepp[b].style.display = "none";
+        if (
+          players[0].score === endRound - 1 ||
+          players[1].score === endRound - 1
+        ) {
+          if (players[0].score > players[1].score) winner = "2";
+          else if (players[1].score > players[0].score) winner = "1";
+          info.style.visibility = "visible";
+          p1.style.display = "block";
+          h1.textContent = `PLAYER ${winner} IS VICTORIOUS`;
+          p1.textContent = `RELOAD PAGE TO PLAY AGAIN`;
+        } else {
+          for (let i = 0; i < numberOfPlayers; i++) {
+            skott[i].style.display = "none";
+            let randomX2 = Math.round(Math.random() * window.innerWidth) - 50;
+            let randomY2 = Math.round(Math.random() * window.innerHeight) - 50;
+            players[i].posX = randomX2;
+            players[i].posY = randomY2;
+          }
+          // Inforutan visas och meddelande om score och round visas
+          info.style.visibility = "visible";
+          h1.textContent = `SCORE FOR PLAYER ${a + 1}`;
+          setTimeout(() => {
+            if (round < endRound)
+              h1.textContent = `GET READY FOR ROUND ${round}`;
+            else h1.textContent = `GET READY FOR THE LAST ROUND`;
+          }, 2000);
+          setTimeout(() => {
+            startGame();
+          }, 4000);
+          p1.style.display = "none";
+          p2.style.display = "none";
+          p3.style.display = "none";
+          round++;
+        }
       }
       info.style.visibility = "visible";
       //Anpassar info-rutans storlek och placering efter storleken på fönstret
@@ -124,32 +190,9 @@
         info.style.left = window.innerWidth / 2 - info.offsetWidth / 2 + "px";
         info.style.top = window.innerHeight / 2 - info.offsetHeight / 2 + "px";
       }
-
-      const startHastighet = 0.55;
-      const skepp = [];
-      const oSkott = [];
-      const skott = [];
-      const keyNames = [];
-      const numberOfPlayers = 2;
-      const numberOfAmmo = 6;
-      const players = [];
-      const direction = ["east", "west"];
-      keyNames[1] = ["d", "a", "w", "s"]; // Styrning player 1
-      keyNames[0] = ["6", "4", "8", "5"]; // Styrning player 2
-      keyNames[2] = " "; // Skjut player 1
-      keyNames[3] = "0"; // Skjut player 2
-      let bothComingFromRight = false;
-      let bothComingFromLeft = false;
-      let bothComingFromTop = false;
-      let bothComingFromBottom = false;
-      let zeroLeftOneRight = false;
-      let oneLeftZeroRight = false;
-      let zeroTopOneBottom = false;
-      let oneTopZeroBottom = false;
-      let krock = false;
-      const ajust = 10;
+      posInfo();
       for (let i = 0; i < numberOfAmmo; i++) {
-        // Skapar ett objekt i JS för skott
+        // Skapar objekt med egenskaper för skott
         oSkott[i] = {
           posX: 0,
           posY: 0,
@@ -167,7 +210,7 @@
         // Slumpar värde för startpossition innom tillgänglig bredd och höjd
         let randomX = Math.round(Math.random() * window.innerWidth + 50) - 50;
         let randomY = Math.round(Math.random() * window.innerHeight + 50) - 50;
-        // Skapar ett objekt i JS för players
+        // Skapar objekt med egenskaper för players/skepp
         players[i] = {
           posX: randomX,
           posY: randomY,
@@ -181,6 +224,7 @@
           direction: "west",
           hit: false,
           lives: 3,
+          score: 0,
         };
         //skapar och appendar html-element
         skepp[i] = document.createElement("IMG");
@@ -202,35 +246,38 @@
             if (down) return;
             down = true;
             // Ökar/miskar hastigheten med accelerationsvärdet beroende på tangent som trycks ned
-            if (event.key === keyNames[i][0]) {
-              inputs[0].value += "=>";
-              players[i].stegX += players[i].accelaration;
-              //Funktion anropas och byter bild på objktet om riktningen är =>
-              if (players[i].stegX > 0) players[i].direction = "east";
-              bytBild(i, players[i].direction);
-            }
-            if (event.key === keyNames[i][1]) {
-              inputs[0].value += "<=";
-              players[i].stegX -= players[i].accelaration;
-              //Funktion anropas och byter bild på objktet om riktningen är <=
-              if (players[i].stegX < 0) players[i].direction = "west";
-              bytBild(i, players[i].direction);
-            }
-            //Ökar/miskar värdet på "stegY" med accelaration
-            if (event.key === keyNames[i][2]) {
-              players[i].stegY -= players[i].accelaration;
-            }
-            if (event.key === keyNames[i][3]) {
-              players[i].stegY += players[i].accelaration;
-            }
-            // Tangenter för avtryckare
-            if (event.key === keyNames[3]) {
-              oSkott[0].active = true;
-              skott[0].style.display = "block";
-            }
-            if (event.key === keyNames[2]) {
-              oSkott[1].active = true;
-              skott[1].style.display = "block";
+            if (onHold) return false;
+            else {
+              if (event.key === keyNames[i][0]) {
+                inputs[0].value += "=>";
+                players[i].stegX += players[i].accelaration;
+                //Funktion anropas och byter bild på objktet om riktningen är =>
+                if (players[i].stegX > 0) players[i].direction = "east";
+                bytBild(i, players[i].direction);
+              }
+              if (event.key === keyNames[i][1]) {
+                inputs[0].value += "<=";
+                players[i].stegX -= players[i].accelaration;
+                //Funktion anropas och byter bild på objktet om riktningen är <=
+                if (players[i].stegX < 0) players[i].direction = "west";
+                bytBild(i, players[i].direction);
+              }
+              //Ökar/miskar värdet på "stegY" med accelaration
+              if (event.key === keyNames[i][2]) {
+                players[i].stegY -= players[i].accelaration;
+              }
+              if (event.key === keyNames[i][3]) {
+                players[i].stegY += players[i].accelaration;
+              }
+              // Tangenter för avtryckare
+              if (event.key === keyNames[3]) {
+                oSkott[0].active = true;
+                skott[0].style.display = "block";
+              }
+              if (event.key === keyNames[2]) {
+                oSkott[1].active = true;
+                skott[1].style.display = "block";
+              }
             }
           },
           false
@@ -247,12 +294,9 @@
       function bytBild(obj, bild) {
         //Byter bild på objektet vid riktningsbyte och träff
         skepp[obj].src = `img/skepp${obj}_${bild}.gif`;
-        //if (obj2) skepp[obj2].src = `img/skepp${obj2}_${bild1}.gif`;
       }
       // Animerar med setInterval. Funktionen ger objekten position utifrån värderna från händelserna
       const motor1 = setInterval(() => {
-        inputs[0].value = skepp[0].style.display;
-        inputs[1].value = players[1].lives;
         // Dessa variabler kollar i vilken riktning objekten färdas. Om stegX < 0 färdas obj från höger till vänster
         // stegX > 0 färdas obj från vänster till höger
         // stegY < 0 från bottom till top, stegY > 0 top till bottom
@@ -271,8 +315,10 @@
           players[1].posX < players[0].right &&
           players[1].posY < players[0].bottom;
         //Anropar "fysikmotorn" kollaVar()
-        if (krock) kollaVar();
+        if (krock && !onHold) kollaVar();
         for (let i = 0; i < numberOfPlayers; i++) {
+          inputs[i].value = players[i].score;
+          inputs[2].value = onHold;
           players[i].right = players[i].posX + players[i].width;
           players[i].bottom = players[i].posY + players[i].height;
           // posX ökar för varje anrop med hastighetsvärdet
@@ -330,7 +376,7 @@
             oSkott[i].speedX = players[i].stegX;
           }
         }
-        posInfo();
+        //posInfo();
       }, 10);
 
       //"Fysikmotor" som kollar när objekten på olika sätt kolliderar och byter därefter riktning
@@ -370,8 +416,8 @@
         ) {
           players[0].stegX = -startHastighet / 2;
           players[1].stegX += startHastighet;
-          bytBild(0, "east");
-          bytBild(1, "west");
+          bytBild(0, "west");
+          bytBild(1, "east");
         } else if (
           zeroLeftOneRight &&
           players[0].right > players[1].posX &&
@@ -435,25 +481,6 @@
           players[1].stegY = -startHastighet;
         }
       }
-      function fortsatt(a, b) {
-        skepp[a].style.display = "none"
-        skepp[b].style.display = "none"
-        for (let i = 0; i < numberOfPlayers; i++) {
-        skott[i].style.display = "none"
-        let randomX2 = Math.round(Math.random() * window.innerWidth) - 50;
-        let randomY2 = Math.round(Math.random() * window.innerHeight) - 50;
-        players[i].posX = randomX2;
-        players[i].posY = randomY2;
-        }
-
-        info.style.visibility = "visible";
-        h1.textContent = `SCORE FOR PLAYER ${a + 1}`;
-        setTimeout(() => {h1.textContent = `GET READY FOR ROUND 2`;}, 2000); 
-        setTimeout(() => {startGame();}, 4000); 
-        p1.style.display = "none";
-        p2.style.display = "none";
-        p3.style.display = "none";
-      }
       // Funktionen kollar om skott-objekten träffar skeppen
       function kollaTraff() {
         function hit(a, b) {
@@ -463,13 +490,17 @@
             oSkott[b].posY < players[a].bottom &&
             oSkott[b].posY > players[a].posY;
           if (players[a].hit) {
-            skott[a].style.display = "none"
-            skott[b].style.display = "none"
+            skott[a].style.display = "none";
+            skott[b].style.display = "none";
             oSkott[b].active = false;
             players[a].lives--;
             bytBild(a, "explosion", "explosion");
             players[a].hit = false;
-            setTimeout(() => {fortsatt(a, b);}, 1000);
+            onHold = true;
+            players[b].score++;
+            setTimeout(() => {
+              continueGame(a, b);
+            }, 1000);
           }
         }
         hit(0, 1);
@@ -479,6 +510,7 @@
   </head>
   <body>
     <div id="info"></div>
+    <input type="text" />
     <input type="text" />
     <input type="text" />
   </body>
