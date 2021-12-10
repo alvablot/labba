@@ -4,18 +4,19 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>MORTAL SPACE COMBAT</title>
     <link
-      rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press Start 2P"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Press Start 2P"
     />
     <style>
       input {
         font-family: "Press Start 2P", sans-serif;
         background: black;
-        border: 1px solid red;
+        border: 0px;
         color: white;
         padding: 0.5rem;
-        width: 5rem;
+        width: 0.8rem;
       }
       img,
       div,
@@ -26,7 +27,7 @@
         display: block;
         text-align: center;
       }
-      .pImage {
+      .p-image {
         display: inline;
         position: relative;
       }
@@ -43,12 +44,17 @@
         padding-top: 2rem;
         padding-bottom: 2rem;
       }
+      .input-right {
+          text-align: right;
+          width:7.2rem;
+        }
+      .input-three {
+          text-align: right;
+          width:4.7rem;}
       #info {
         font-family: "Press Start 2P", sans-serif;
         font-size: 1rem;
         z-index: 5;
-        background: black;
-        border: 1px solid red;
         padding: 20px;
         visibility: hidden;
       }
@@ -82,10 +88,26 @@
       let winner = 0;
       let fontFaceSet = document.fonts;
       const ajust = 10;
-      // Input objekt för att kontrollera värden
-      let inputs = document.querySelectorAll("input");
-      //const info = document.createElement("div");
-      const info = document.getElementById("info");
+      // Input objekt för att visa poäng och runda
+      const numOfInputs = 6;
+      const inputs = [];
+      //const textNodes = [];
+      for (let i = 0; i < numOfInputs; i++) {
+        inputs[i] = document.createElement("input");
+        inputs[i].setAttribute("type", "text");
+        document.body.append(inputs[i]);
+      }
+      inputs[0].classList.add("input-right")
+      inputs[2].classList.add("input-right")
+      inputs[4].classList.add("input-three")
+      inputs[0].value = "P1 SCORE:";
+      inputs[2].value = "P2 SCORE:";
+      inputs[4].value = "ROUND:";
+
+   
+
+      const info = document.createElement("div");
+      info.setAttribute("id", "info");
       /// Preloadar bilder ////////////////////////////////////////////////////////////////////
       let oImg = [];
       oImg[0] = document.createElement("IMG");
@@ -103,17 +125,17 @@
       const p3 = document.createElement("h1");
       document.body.append(info);
       info.append(oImg[0]);
-      oImg[0].classList.add("pImage");
-      info.append(oImg[2]);
-      oImg[2].classList.add("pImage");
+      oImg[0].classList.add("p-image");
+      info.append(oImg[3]);
+      oImg[3].classList.add("p-image");
       info.append(h1);
       info.append(p1);
       info.append(p2);
       info.append(p3);
       h1.textContent = `MORTAL SPACE COMBAT`;
-      p1.textContent = `Player 1: Styr med A W S D, skjut med space`;
-      p2.textContent = `Player 2: Styr med 4 8 5 6, skjut med 0`;
-      p3.textContent = `Tryck Enter för att starta spel!`;
+      p1.textContent = `PLAYER 1: NAVIGATE WITH A W S D, FIRE WITH SPACE`;
+      p2.textContent = `PLAYER 2: NAVIGATE WITH 4 8 5 6, FIRE WITH 0`;
+      p3.textContent = `HIT ENTER TO START GAME!`;
       /// Lyssnare efter enter för att starta spelet
       document.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
@@ -121,7 +143,8 @@
           h1.textContent = `GET READY TO RUMBLE`;
           p1.textContent = i;
           p2.style.display = "none";
-          p3.style.display = "none";
+          p3.textContent = `BEST OF ${endRound} ROUNDS`;
+          //p3.style.display = "none";
           // Räknar ner innan spelet startar
           let starter = setInterval(() => {
             i--;
@@ -174,7 +197,7 @@
           setTimeout(() => {
             if (round < endRound)
               h1.textContent = `GET READY FOR ROUND ${round}`;
-            else h1.textContent = `GET READY FOR THE LAST ROUND`;
+            else h1.textContent = `GET READY FOR THE FINALE ROUND`;
           }, 2000);
           setTimeout(() => {
             startGame();
@@ -215,8 +238,8 @@
         players[i] = {
           posX: randomX,
           posY: randomY,
-          width: 40,
-          height: 30,
+          width: 50,
+          height: 40,
           right: 0,
           bottom: 0,
           stegX: 0.5,
@@ -230,8 +253,8 @@
         //skapar och appendar html-element
         skepp[i] = document.createElement("IMG");
         skott[i] = document.createElement("div");
-        document.body.append(skepp[i]);
         document.body.append(skott[i]);
+        document.body.append(skepp[i]);
         skepp[i].src = oImg[i].src;
         //Bredd och höjd css
         skepp[i].style.display = "none";
@@ -250,14 +273,12 @@
             if (onHold) return false;
             else {
               if (event.key === keyNames[i][0]) {
-                inputs[0].value += "=>";
                 players[i].stegX += players[i].accelaration;
                 //Funktion anropas och byter bild på objktet om riktningen är =>
                 if (players[i].stegX > 0) players[i].direction = "east";
                 bytBild(i, players[i].direction);
               }
               if (event.key === keyNames[i][1]) {
-                inputs[0].value += "<=";
                 players[i].stegX -= players[i].accelaration;
                 //Funktion anropas och byter bild på objktet om riktningen är <=
                 if (players[i].stegX < 0) players[i].direction = "west";
@@ -318,8 +339,9 @@
         //Anropar "fysikmotorn" kollaVar()
         if (krock && !onHold) kollaVar();
         for (let i = 0; i < numberOfPlayers; i++) {
-          inputs[i].value = players[i].score;
-          inputs[2].value = onHold;
+          inputs[1].value = players[1].score;
+          inputs[3].value = players[0].score;
+          inputs[5].value = round;
           players[i].right = players[i].posX + players[i].width;
           players[i].bottom = players[i].posY + players[i].height;
           // posX ökar för varje anrop med hastighetsvärdet
@@ -489,7 +511,7 @@
             oSkott[b].posX > players[a].posX &&
             oSkott[b].posX < players[a].right &&
             oSkott[b].posY < players[a].bottom &&
-            oSkott[b].posY > players[a].posY;
+            oSkott[b].posY > (players[a].posY-5);
           if (players[a].hit) {
             skott[a].style.display = "none";
             skott[b].style.display = "none";
@@ -509,10 +531,5 @@
       }
     </script>
   </head>
-  <body>
-    <div id="info"></div>
-    <input type="text" />
-    <input type="text" />
-    <input type="text" />
-  </body>
+  <body></body>
 </html>
