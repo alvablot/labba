@@ -80,6 +80,7 @@
       let round = 1;
       let endRound = 3;
       let winner = 0;
+      let fontFaceSet = document.fonts;
       const ajust = 10;
       // Input objekt för att kontrollera värden
       let inputs = document.querySelectorAll("input");
@@ -190,7 +191,7 @@
         info.style.left = window.innerWidth / 2 - info.offsetWidth / 2 + "px";
         info.style.top = window.innerHeight / 2 - info.offsetHeight / 2 + "px";
       }
-      posInfo();
+      console.log(fontFaceSet);
       for (let i = 0; i < numberOfAmmo; i++) {
         // Skapar objekt med egenskaper för skott
         oSkott[i] = {
@@ -376,7 +377,7 @@
             oSkott[i].speedX = players[i].stegX;
           }
         }
-        //posInfo();
+        posInfo();
       }, 10);
 
       //"Fysikmotor" som kollar när objekten på olika sätt kolliderar och byter därefter riktning
