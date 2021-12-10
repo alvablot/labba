@@ -1,7 +1,5 @@
+body,
 input {
-  background: black;
-}
-body {
   background-color: black;
   color: white;
   background-image: url("../img/background.gif");
