@@ -77,22 +77,25 @@ p3.textContent = `HIT ENTER TO START GAME!`;
 info.style.visibility = "visible";
 /// Lyssnare efter enter för att starta spelet
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    let i = 3;
-    h1.textContent = `GET READY TO RUMBLE`;
-    p1.textContent = i;
-    p2.style.display = "none";
-    p3.textContent = `BEST OF ${endRound} ROUNDS`;
-    // Räknar ner innan spelet startar
-    let starter = setInterval(() => {
-      i--;
-      if (i < 1) {
-        p1.textContent = "GO!";
-        clearInterval(starter);
-        startGame();
-      } else p1.textContent = i;
+  if (round != 1) return false;
+  else {
+    if (event.key === "Enter") {
+      let i = 3;
+      h1.textContent = `GET READY TO RUMBLE`;
+      p1.textContent = i;
       p2.style.display = "none";
-    }, 1000);
+      p3.textContent = `BEST OF ${endRound} ROUNDS`;
+      // Räknar ner innan spelet startar
+      let starter = setInterval(() => {
+        i--;
+        if (i < 1) {
+          p1.textContent = "GO!";
+          clearInterval(starter);
+          startGame();
+        } else p1.textContent = i;
+        p2.style.display = "none";
+      }, 1000);
+    }
   }
 });
 function startGame() {
@@ -114,6 +117,9 @@ function continueGame(a, b) {
   if (players[0].score === endRound - 1 || players[1].score === endRound - 1) {
     if (players[0].score > players[1].score) winner = "2";
     else if (players[1].score > players[0].score) winner = "1";
+    clearInterval(motor1);
+    skepp[a].style.display = "none";
+    skepp[b].style.display = "none";
     info.style.visibility = "visible";
     p1.style.display = "block";
     h1.textContent = `PLAYER ${winner} IS VICTORIOUS`;
