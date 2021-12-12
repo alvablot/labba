@@ -43,6 +43,15 @@ main {
   text-align: right;
   width: 5.4rem;
 }
+.blink-me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
 #info {
   top: -3rem;
   position: relative;
@@ -50,4 +59,3 @@ main {
   z-index: 5;
   visibility: hidden;
 }
-

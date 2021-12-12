@@ -1,3 +1,30 @@
+const sounds = [];
+sounds[0] = document.createElement("audio");
+sounds[0].src = "../sounds/hyprbf1a.wav";
+sounds[1] = document.createElement("audio");
+sounds[1].src = "../sounds/railgf1a.wav";
+sounds[2] = document.createElement("audio");
+sounds[2].src = "../sounds/spacecombat.mp3";
+sounds[3] = document.createElement("audio");
+sounds[3].src = "../sounds/explosion3.mp3";
+sounds[4] = document.createElement("audio");
+sounds[4].src = "../sounds/scream2.mp3";
+sounds[5] = document.createElement("audio");
+sounds[5].src = "../sounds/applause.mp3";
+sounds.forEach((sound) => {
+  sound.setAttribute("preload", "auto");
+  sound.setAttribute("controls", "none");
+  sound.style.display = "none";
+  document.body.appendChild(sound);
+});
+function playSound(obj) {
+  if (sounds[obj].paused) {
+    sounds[obj].play();
+  } else {
+    sounds[obj].currentTime = 0;
+  }
+}
+// Variabler för olika vektorer mm som har med hastighet, placering etc att göra
 const startHastighet = 0.55;
 const skepp = [];
 const oSkott = [];
@@ -6,11 +33,12 @@ const keyNames = [];
 const numberOfPlayers = 2;
 const numberOfAmmo = 2;
 const players = [];
-const direction = ["east", "west"];
+const fireColor = ["#ffffaa", "#ffaaaa"];
 keyNames[1] = ["d", "a", "w", "s"]; // Styrning player 1
 keyNames[0] = ["6", "4", "8", "5"]; // Styrning player 2
 keyNames[2] = " "; // Skjut player 1
 keyNames[3] = "0"; // Skjut player 2
+// Variabler för riktning av objekten
 let bothComingFromRight = false;
 let bothComingFromLeft = false;
 let bothComingFromTop = false;
@@ -21,15 +49,15 @@ let zeroTopOneBottom = false;
 let oneTopZeroBottom = false;
 let krock = false;
 let onHold = true;
+// Räknevärden
 let round = 1;
 let endRound = 3;
 let winner = 0;
-let fontFaceSet = document.fonts;
+//let fontFaceSet = document.fonts;
 const ajust = 10;
 // Input objekt för att visa poäng och runda
 const numOfInputs = 6;
 const inputs = [];
-//const textNodes = [];
 for (let i = 0; i < numOfInputs; i++) {
   inputs[i] = document.createElement("input");
   inputs[i].setAttribute("type", "text");
@@ -41,10 +69,10 @@ inputs[4].classList.add("input-three");
 inputs[0].value = "P1 SCORE:";
 inputs[2].value = "P2 SCORE:";
 inputs[4].value = "ROUND:";
-
+// Inforuta
 const info = document.createElement("div");
 const main = document.createElement("main");
-/// Preloadar bilder ////////////////////////////////////////////////////////////////////
+/// bilder /////////////////
 let oImg = [];
 oImg[0] = document.createElement("IMG");
 oImg[0].src = "img/skepp0_east.gif";
@@ -54,6 +82,10 @@ oImg[2] = document.createElement("IMG");
 oImg[2].src = "img/skepp0_west.gif";
 oImg[3] = document.createElement("IMG");
 oImg[3].src = "img/skepp1_west.gif";
+oImg[4] = document.createElement("IMG");
+oImg[4].src = "img/skepp0_explosion.gif";
+oImg[5] = document.createElement("IMG");
+oImg[5].src = "img/skepp1_explosion.gif";
 /////// Element för inforutan
 const h1 = document.createElement("h1");
 const p1 = document.createElement("p");
@@ -74,22 +106,25 @@ h1.textContent = `MORTAL SPACE COMBAT`;
 p1.textContent = `PLAYER 1: NAVIGATE WITH A W S D, FIRE WITH SPACE`;
 p2.textContent = `PLAYER 2: NAVIGATE WITH 4 8 5 6, FIRE WITH 0`;
 p3.textContent = `HIT ENTER TO START GAME!`;
+p3.classList.add("blink-me");
 info.style.visibility = "visible";
 /// Lyssnare efter enter för att starta spelet
 document.addEventListener("keydown", (event) => {
   if (round != 1) return false;
+  // "Dödar" funktion efter första rundan
   else {
     if (event.key === "Enter") {
+      playSound(2);
       let i = 3;
       h1.textContent = `GET READY TO RUMBLE`;
       p1.textContent = i;
       p2.style.display = "none";
+      p3.classList.remove("blink-me");
       p3.textContent = `BEST OF ${endRound} ROUNDS`;
       // Räknar ner innan spelet startar
       let starter = setInterval(() => {
         i--;
-        if (i < 1) {
-          p1.textContent = "GO!";
+        if (i == 0) {
           clearInterval(starter);
           startGame();
         } else p1.textContent = i;
@@ -98,34 +133,40 @@ document.addEventListener("keydown", (event) => {
     }
   }
 });
+// Ser till at spelet börjar och rätt saker visas/göms
 function startGame() {
   for (let i = 0; i < numberOfPlayers; i++) {
     skepp[i].style.display = "block";
     skott[i].style.display = "block";
     onHold = false;
-    if (players[i].stegX > 0) players[i].direction = "east";
-    bytBild(i, players[i].direction);
-    if (players[i].stegX < 0) players[i].direction = "west";
-    bytBild(i, players[i].direction);
+    bytBild(i, "east", players[i].width, players[i].height);
+    bytBild(i, "east", players[i].width, players[i].height);
   }
   info.style.visibility = "hidden";
 }
-/// Resettar skeppens positioner och gömmer när inforutan visas
+/// Reset:ar skeppens positioner och gömmer dem när inforutan visas
 function continueGame(a, b) {
   skepp[a].style.display = "none";
   skepp[b].style.display = "none";
+  // Om det är sista rundan pga av ena spelaren har två poäng
   if (players[0].score === endRound - 1 || players[1].score === endRound - 1) {
+    playSound(5);
+    // Avgör vem som har vunnit
     if (players[0].score > players[1].score) winner = "2";
     else if (players[1].score > players[0].score) winner = "1";
+    // Stänger av animationen
     clearInterval(motor1);
+    // Göm objekt visa inforuta
     skepp[a].style.display = "none";
     skepp[b].style.display = "none";
     info.style.visibility = "visible";
     p1.style.display = "block";
     h1.textContent = `PLAYER ${winner} IS VICTORIOUS`;
+    p1.classList.add("blink-me");
     p1.textContent = `RELOAD PAGE TO PLAY AGAIN`;
   } else {
     for (let i = 0; i < numberOfPlayers; i++) {
+      // Placerar om objekten vid ny runda
       skott[i].style.display = "none";
       let randomX2 = Math.round(Math.random() * window.innerWidth) - 50;
       let randomY2 = Math.round(Math.random() * window.innerHeight) - 50;
@@ -135,10 +176,12 @@ function continueGame(a, b) {
     // Inforutan visas och meddelande om score och round visas
     info.style.visibility = "visible";
     h1.textContent = `SCORE FOR PLAYER ${a + 1}`;
+    // Inforuta efter 2 sek
     setTimeout(() => {
       if (round < endRound) h1.textContent = `GET READY FOR ROUND ${round}`;
       else h1.textContent = `GET READY FOR THE FINALE ROUND`;
     }, 2000);
+    // Startar nästa runda efter 4 sek
     setTimeout(() => {
       startGame();
     }, 4000);
@@ -148,7 +191,7 @@ function continueGame(a, b) {
     round++;
   }
 }
-console.log(fontFaceSet);
+//console.log(fontFaceSet);
 for (let i = 0; i < numberOfAmmo; i++) {
   // Skapar objekt med egenskaper för skott
   oSkott[i] = {
@@ -160,7 +203,6 @@ for (let i = 0; i < numberOfAmmo; i++) {
     speedY: 0.5,
     accelaration: 10,
     active: false,
-    direction: "west",
   };
 }
 //Loopen körs för varje spelar-objekt "numberOfPlayers"
@@ -179,10 +221,10 @@ for (let i = 0; i < numberOfPlayers; i++) {
     stegX: 0.5,
     stegY: 0.5,
     accelaration: 1.2,
-    direction: "west",
     hit: false,
     lives: 3,
     score: 0,
+    loaded: true,
   };
   //skapar och appendar html-element
   skepp[i] = document.createElement("IMG");
@@ -193,32 +235,25 @@ for (let i = 0; i < numberOfPlayers; i++) {
   //Bredd och höjd css
   skepp[i].style.display = "none";
   skott[i].style.display = "none";
-  skepp[i].style.width = players[i].width + "px";
-  skepp[i].style.height = players[i].height + "px";
-  skott[i].textContent = `*`;
+  skott[i].style.color = fireColor[i];
+  skott[i].textContent = `.`;
   let down = false;
   // Lyssnar händelser från olika tangenter
   document.addEventListener(
     "keydown",
     (event) => {
-      if (down) return;
-      down = true;
       // Ökar/miskar hastigheten med accelerationsvärdet beroende på tangent som trycks ned
       if (onHold) return false;
+      // Ser till att funktionen inte funkar om inforutan är uppe
       else {
+        //Ökar/miskar värdet på stegX med accelaration
         if (event.key === keyNames[i][0]) {
           players[i].stegX += players[i].accelaration;
-          //Funktion anropas och byter bild på objktet om riktningen är =>
-          if (players[i].stegX > 0) players[i].direction = "east";
-          bytBild(i, players[i].direction);
         }
         if (event.key === keyNames[i][1]) {
           players[i].stegX -= players[i].accelaration;
-          //Funktion anropas och byter bild på objktet om riktningen är <=
-          if (players[i].stegX < 0) players[i].direction = "west";
-          bytBild(i, players[i].direction);
         }
-        //Ökar/miskar värdet på "stegY" med accelaration
+        //Ökar/miskar värdet på stegY med accelaration
         if (event.key === keyNames[i][2]) {
           players[i].stegY -= players[i].accelaration;
         }
@@ -229,27 +264,23 @@ for (let i = 0; i < numberOfPlayers; i++) {
         if (event.key === keyNames[3]) {
           oSkott[0].active = true;
           skott[0].style.display = "block";
+          if (players[0].loaded) playSound(0);
         }
         if (event.key === keyNames[2]) {
           oSkott[1].active = true;
           skott[1].style.display = "block";
+          if (players[1].loaded) playSound(1);
         }
       }
     },
     false
   );
-  //För att förhindra automatisk repetition
-  document.addEventListener(
-    "keyup",
-    function () {
-      down = false;
-    },
-    false
-  );
 }
-function bytBild(obj, bild) {
-  //Byter bild på objektet vid riktningsbyte och träff
+function bytBild(obj, bild, w, h) {
+  //Byter bild på objektet vid träff
   skepp[obj].src = `img/skepp${obj}_${bild}.gif`;
+  skepp[obj].style.width = w + "px";
+  skepp[obj].style.height = h + "px";
 }
 // Animerar med setInterval. Funktionen ger objekten position utifrån värderna från händelserna
 const motor1 = setInterval(() => {
@@ -281,12 +312,8 @@ const motor1 = setInterval(() => {
     // posX ökar för varje anrop med hastighetsvärdet
     // Om objektet kommer utanför tillgänglig höjd/bredd byter det riktning
     if (players[i].right > window.innerWidth) {
-      players[i].direction = "west";
-      bytBild(i, players[i].direction);
       players[i].stegX = -startHastighet;
     } else if (players[i].posX < 1) {
-      players[i].direction = "east";
-      bytBild(i, players[i].direction);
       players[i].stegX = startHastighet;
     }
     if (players[i].bottom > window.innerHeight) {
@@ -294,7 +321,7 @@ const motor1 = setInterval(() => {
     } else if (players[i].posY < 1) {
       players[i].stegY = startHastighet;
     }
-    // Här får bilderna sina CSS-värden vilket skapar själva animeringen
+    // Här får objekten sina XY-värden vilket skapar själva animeringen
     players[i].posX += players[i].stegX;
     players[i].posY += players[i].stegY;
 
@@ -319,6 +346,7 @@ const motor1 = setInterval(() => {
     }
     // FIRE! Skickas iväg med nya värden
     if (oSkott[i].active) {
+      players[i].loaded = false;
       if (oSkott[i].speedX > 0) {
         oSkott[i].posX += oSkott[i].speedX + oSkott[i].accelaration;
       } else if (oSkott[i].speedX < 0) {
@@ -331,6 +359,7 @@ const motor1 = setInterval(() => {
       oSkott[i].posY = players[i].posY + players[i].height / 2;
       oSkott[i].speedY = players[i].stegY;
       oSkott[i].speedX = players[i].stegX;
+      players[i].loaded = true;
     }
   }
 }, 10);
@@ -345,8 +374,6 @@ function kollaVar(obj) {
   ) {
     players[0].stegX = startHastighet / 2;
     players[1].stegX -= startHastighet;
-    bytBild(0, "east");
-    bytBild(1, "west");
   } else if (
     bothComingFromRight &&
     players[1].posX < players[0].right &&
@@ -354,8 +381,6 @@ function kollaVar(obj) {
   ) {
     players[1].stegX = startHastighet / 2;
     players[0].stegX -= startHastighet;
-    bytBild(0, "west");
-    bytBild(1, "east");
   } else if (
     bothComingFromLeft &&
     players[1].right > players[0].posX &&
@@ -363,8 +388,6 @@ function kollaVar(obj) {
   ) {
     players[1].stegX = -startHastighet / 2;
     players[0].stegX += startHastighet;
-    bytBild(0, "east");
-    bytBild(1, "west");
   } else if (
     bothComingFromLeft &&
     players[0].right > players[1].posX &&
@@ -372,8 +395,6 @@ function kollaVar(obj) {
   ) {
     players[0].stegX = -startHastighet / 2;
     players[1].stegX += startHastighet;
-    bytBild(0, "west");
-    bytBild(1, "east");
   } else if (
     zeroLeftOneRight &&
     players[0].right > players[1].posX &&
@@ -381,8 +402,6 @@ function kollaVar(obj) {
   ) {
     players[0].stegX = -startHastighet;
     players[1].stegX = startHastighet;
-    bytBild(0, "west");
-    bytBild(1, "east");
   } else if (
     oneLeftZeroRight &&
     players[1].right > players[0].posX &&
@@ -390,8 +409,6 @@ function kollaVar(obj) {
   ) {
     players[0].stegX = startHastighet;
     players[1].stegX = -startHastighet;
-    bytBild(0, "east");
-    bytBild(1, "west");
   } ///////////////////////////////////// Y-led
   if (
     bothComingFromBottom &&
@@ -450,7 +467,9 @@ function kollaTraff() {
       skott[b].style.display = "none";
       oSkott[b].active = false;
       players[a].lives--;
-      bytBild(a, "explosion", "explosion");
+      bytBild(a, "explosion", 100, 100);
+      playSound(3);
+      playSound(4);
       players[a].hit = false;
       onHold = true;
       players[b].score++;

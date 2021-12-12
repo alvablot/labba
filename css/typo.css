@@ -1,4 +1,4 @@
-input {
+input, div {
   font-family: "Press Start 2P", sans-serif;
   font-size: 0.8rem;
 }
@@ -6,6 +6,5 @@ h1 {
   font-size: 1.5rem;
 }
 #info {
-  font-family: "Press Start 2P", sans-serif;
   font-size: 1rem;
 }
