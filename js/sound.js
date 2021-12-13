@@ -17,9 +17,6 @@ sounds.forEach((sound) => {
   sound.setAttribute("controls", "none");
   sound.style.display = "none";
   document.body.appendChild(sound);
-  sound.addEventListener("canplaythrough", (event) =>{
-    console.log(`${sound.src} is loaded`)
-  })
 });
 function playSound(obj) {
   if (sounds[obj].paused) {
