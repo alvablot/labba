@@ -16,6 +16,9 @@ sounds.forEach((sound) => {
   sound.setAttribute("controls", "none");
   sound.style.display = "none";
   document.body.appendChild(sound);
+  sound.addEventListener("canplaythrough", (event) =>{
+    console.log(`${sound.src} is loaded`)
+  })
 });
 function playSound(obj) {
   if (sounds[obj].paused) {
@@ -124,7 +127,7 @@ document.addEventListener("keydown", (event) => {
       // Räknar ner innan spelet startar
       let starter = setInterval(() => {
         i--;
-        if (i == 0) {
+        if (i === 0) {
           clearInterval(starter);
           startGame();
         } else p1.textContent = i;
@@ -279,8 +282,8 @@ for (let i = 0; i < numberOfPlayers; i++) {
 function bytBild(obj, bild, w, h) {
   //Byter bild på objektet vid träff
   skepp[obj].src = `img/skepp${obj}_${bild}.gif`;
-  skepp[obj].style.width = w + "px";
-  skepp[obj].style.height = h + "px";
+  skepp[obj].width = w;
+  skepp[obj].height = h;
 }
 // Animerar med setInterval. Funktionen ger objekten position utifrån värderna från händelserna
 const motor1 = setInterval(() => {
