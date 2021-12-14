@@ -1,4 +1,3 @@
-
 const sounds = [];
 sounds[0] = document.createElement("audio");
 sounds[0].src = "sounds/hyprbf1a.wav";
@@ -12,6 +11,8 @@ sounds[4] = document.createElement("audio");
 sounds[4].src = "sounds/scream2.mp3";
 sounds[5] = document.createElement("audio");
 sounds[5].src = "sounds/applause.mp3";
+sounds[6] = document.createElement("audio");
+sounds[6].src = "sounds/mm.mp3";
 sounds.forEach((sound) => {
   sound.setAttribute("preload", "auto");
   sound.setAttribute("controls", "none");

@@ -1,3 +1,7 @@
+body {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
 input {
   border: 0px;
   padding-top: 0.4rem;
@@ -13,14 +17,6 @@ span {
   display: block;
   text-align: center;
 }
-.p-image {
-  display: inline;
-  position: relative;
-}
-body {
-  overflow-y: hidden;
-  overflow-x: hidden;
-}
 h1 {
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -32,6 +28,10 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.p-image {
+  display: inline;
+  position: relative;
 }
 .input-right {
   text-align: right;
@@ -46,7 +46,6 @@ main {
 .blink-me {
   animation: blinker 1s linear infinite;
 }
-
 @keyframes blinker {
   50% {
     opacity: 0;

@@ -38,7 +38,6 @@ for (let i = 0; i < numberOfPlayers; i++) {
   document.body.append(skott[i]);
   document.body.append(skepp[i]);
   skepp[i].src = oImg[i].src;
-  //Bredd och höjd css
   skepp[i].style.display = "none";
   skott[i].style.display = "none";
   skott[i].style.color = fireColor[i];
@@ -172,6 +171,7 @@ const motor1 = setInterval(() => {
 
 //"Fysikmotor" som kollar när objekten på olika sätt kolliderar och byter därefter riktning
 function kollaVar(obj) {
+  playSound(6);
   if (
     ///////////////////////////////////// X-led
     bothComingFromRight &&

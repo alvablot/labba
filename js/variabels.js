@@ -27,7 +27,6 @@ let onHold = true;
 let round = 1;
 let endRound = 3;
 let winner = 0;
-//let fontFaceSet = document.fonts;
 const ajust = 10;
 // Input objekt för att visa poäng och runda
 const numOfInputs = 6;
@@ -79,15 +78,15 @@ info.append(p2);
 info.append(p3);
 h1.textContent = `MORTAL SPACE COMBAT`;
 p1.textContent = `PLAYER 1: NAVIGATE WITH 
-    ${keyNames[1][1].toUpperCase()} 
-    ${keyNames[1][2].toUpperCase()} 
-    ${keyNames[1][0].toUpperCase()} 
-    ${keyNames[1][3].toUpperCase()}, FIRE WITH '${keyNames[2][0]}'`;
+    '${keyNames[1][1].toUpperCase()}' 
+    '${keyNames[1][2].toUpperCase()}' 
+    '${keyNames[1][0].toUpperCase()}' 
+    '${keyNames[1][3].toUpperCase()}', FIRE WITH '${keyNames[2][0]}'`;
 p2.textContent = `PLAYER 2: NAVIGATE WITH 
-    ${keyNames[0][1].toUpperCase()} 
-    ${keyNames[0][2].toUpperCase()} 
-    ${keyNames[0][0].toUpperCase()} 
-    ${keyNames[0][3].toUpperCase()} FIRE WITH '${keyNames[3][0]}'`;
+    '${keyNames[0][1].toUpperCase()}' 
+    '${keyNames[0][2].toUpperCase()}' 
+    '${keyNames[0][0].toUpperCase()}' 
+    '${keyNames[0][3].toUpperCase()}', FIRE WITH '${keyNames[3][0]}'`;
 p3.textContent = `HIT ENTER TO START GAME!`;
 p3.classList.add("blink-me");
 info.style.visibility = "visible";
